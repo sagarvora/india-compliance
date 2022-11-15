@@ -201,23 +201,20 @@ export default {
 
       if (!response.success || !response.message?.order_token) return;
 
-      this.$router.push({
-        name: "paymentPage",
-        params: {
-          order: {
-            token: response.message.order_token,
-            credits: this.credits,
-            netTotal: this.netTotal,
-            tax: this.tax,
-            taxRate: this.taxRate,
-            grandTotal: this.grandTotal,
-            validity: frappe.datetime.add_months(
-              frappe.datetime.now_date(),
-              this.creditsValidity
-            ),
-          },
-        },
-      });
+      this.$store.state.account.orderDetails = {
+        token: response.message.order_token,
+        credits: this.credits,
+        netTotal: this.netTotal,
+        tax: this.tax,
+        taxRate: this.taxRate,
+        grandTotal: this.grandTotal,
+        validity: frappe.datetime.add_months(
+          frappe.datetime.now_date(),
+          this.creditsValidity
+        ),
+      }
+
+      this.$router.push({ name: "paymentPage" });
     },
 
     updateCredits() {

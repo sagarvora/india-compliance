@@ -85,6 +85,7 @@ export default {
 
   data() {
     return {
+      orderDetails: null,
       isLoading: true,
       // TODO: fix reactivity of vuex store's state `billingDetails` and use computed property instead
       billingDetails: {},
@@ -122,10 +123,6 @@ export default {
 
     pincode() {
       return this.billingDetails.pincode;
-    },
-
-    orderDetails() {
-      return this.$route.params.order;
     },
 
     creditsValidity() {
@@ -330,11 +327,14 @@ export default {
     },
   },
 
-  beforeRouteEnter(to) {
-    if (!to.params.order) return { name: "home", replace: true };
-  },
-
   created() {
+    this.orderDetails = this.$store.state.account.orderDetails;
+    if (!this.orderDetails) {
+      return this.$router.replace({ name: "home" });
+    }
+
+    this.$store.state.account.orderDetails = null;
+
     const script = document.createElement("script");
     script.setAttribute(
       "src",
@@ -342,7 +342,7 @@ export default {
     );
     document.head.appendChild(script);
     script.onload = async () => {
-      this.initCashFree(this.$route.params.order.token);
+      this.initCashFree(this.orderDetails.token);
       await this.$store.dispatch("fetchDetails", "billing");
       this.isLoading = false;
       this.billingDetails = this.$store.state.account.billingDetails;

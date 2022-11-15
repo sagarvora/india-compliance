@@ -1,7 +1,6 @@
 import {
     get_details,
     update_billing_details,
-    create_order,
 } from "../../services/AccountService";
 
 export default {
@@ -9,7 +8,7 @@ export default {
         subscriptionDetails: null,
         calculatorDetails: null,
         billingDetails: null,
-        orderToken: null,
+        orderDetails: null,
     },
 
     mutations: {
@@ -23,10 +22,6 @@ export default {
 
         SET_BILLING_DETAILS(state, billingDetails) {
             state.billingDetails = billingDetails;
-        },
-
-        SET_ORDER_TOKEN(state, orderToken) {
-            state.orderToken = orderToken;
         },
     },
 
@@ -50,20 +45,6 @@ export default {
                 frappe.throw();
             commit("SET_BILLING_DETAILS", response.message);
             return response.message
-        },
-
-        async createOrder({ commit }, { credits, amount }) {
-            const response = await create_order(credits, amount);
-            if (response.invalid_token)
-                return this.dispatch("setApiSecret", null);
-
-            if (
-                !response.success ||
-                !response.message ||
-                !response.message.order_token
-            )
-                frappe.throw();
-            commit("SET_ORDER_TOKEN", response.message.order_token);
         },
     },
 
