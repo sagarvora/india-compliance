@@ -69,7 +69,7 @@ class StaticResourcesAPI(BaseAPI):
 
 
 class FilesAPI(BaseAPI):
-    BASE_PATH = "standard/gstn/files"
+    BASE_PATH = "standard/gstn_/files"
 
     def get_all(self, url_details):
         response = frappe._dict()
@@ -298,7 +298,7 @@ class TaxpayerAuthenticate(BaseAPI):
 
 
 class TaxpayerBaseAPI(TaxpayerAuthenticate):
-    BASE_PATH = "standard/gstn"
+    BASE_PATH = "standard/gstn_"
 
     IGNORED_ERROR_CODES = {
         **TaxpayerAuthenticate.IGNORED_ERROR_CODES,
@@ -317,6 +317,7 @@ class TaxpayerBaseAPI(TaxpayerAuthenticate):
                 "state-cd": self.company_gstin[:2],
                 "username": self.username,
                 "txn": self.generate_request_id(length=32),
+                # TODO: set "ip-usr" header
             }
         )
 
